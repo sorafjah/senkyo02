@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1000人の村 選挙シミュレーター</title>
+    <!-- Google Fontsで日本語と英字のバランスが良いフォントを導入 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        .bar-container {
+            height: 60px;
+            display: flex;
+            border-radius: 16px;
+            overflow: hidden;
+            background-color: #e2e8f0;
+            border: 1px solid #cbd5e1;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .bar-segment {
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .control-card {
+            transition: all 0.2s;
+        }
+        .control-card:hover {
+            transform: translateY(-2px);
+        }
+        /* 数字入力欄のスタイル */
+        .vote-input {
+            appearance: none;
+            -moz-appearance: textfield;
+            background: transparent;
+            border: none;
+            text-align: center;
+            width: 70px;
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: #1e293b;
+        }
+        .vote-input:focus {
+            outline: none;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-10 text-slate-800">
+    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+        <!-- Header -->
+        <div class="border-b border-slate-100 p-6 md:p-8 text-center bg-slate-50/50">
+            <h1 class="text-xl md:text-2xl font-black tracking-tight text-slate-800">1000人の村 選挙シミュレーター</h1>
+            <p class="mt-1 text-slate-500 text-sm italic font-medium">あなたの1票が、未来を変える。</p>
+        </div>
+
+        <div class="p-6 md:p-10 space-y-10">
+            <!-- Main Bar Chart -->
+            <section>
+                <div class="flex justify-between items-end mb-4 px-2">
+                    <h2 class="font-bold text-slate-700 text-sm uppercase tracking-wider">村全体の得票率</h2>
+                    <div class="text-right">
+                        <span class="text-[10px] text-slate-400 block font-bold uppercase">投票率</span>
+                        <span id="label-turnout-big" class="font-black text-blue-600 text-2xl">50</span><span class="text-blue-600 font-black text-lg">%</span>
+                    </div>
+                </div>
+                <div class="bar-container mb-10" id="main-bar">
+                    <div id="bar-party1" class="bar-segment bg-rose-500 shadow-inner">A</div>
+                    <div id="bar-party2" class="bar-segment bg-amber-500 shadow-inner">B</div>
+                    <div id="bar-party3" class="bar-segment bg-emerald-500 shadow-inner">C</div>
+                    <div id="bar-absent" class="bar-segment bg-slate-300 text-slate-500">棄権</div>
+                </div>
+
+                <!-- Interactive Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- Party A -->
+                    <div class="control-card bg-white border-2 border-rose-100 rounded-2xl p-4 flex flex-col items-center shadow-sm hover:border-rose-500">
+                        <span class="text-rose-600 font-black text-lg mb-1">A党</span>
+                        <div class="flex items-center space-x-1">
+                            <button onclick="changeValue('p1', -1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 text-rose-600 hover:bg-rose-500 hover:text-white transition-all text-xl font-bold">▽</button>
+                            <div class="flex items-baseline">
+                                <input type="number" id="input-p1" value="200" min="0" max="1000" class="vote-input">
+                                <span class="text-slate-400 text-[10px] font-black">人</span>
+                            </div>
+                            <button onclick="changeValue('p1', 1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 text-rose-600 hover:bg-rose-500 hover:text-white transition-all text-xl font-bold">△</button>
+                        </div>
+                    </div>
+
+                    <!-- Party B -->
+                    <div class="control-card bg-white border-2 border-amber-100 rounded-2xl p-4 flex flex-col items-center shadow-sm hover:border-amber-500">
+                        <span class="text-amber-600 font-black text-lg mb-1">B党</span>
+                        <div class="flex items-center space-x-1">
+                            <button onclick="changeValue('p2', -1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white transition-all text-xl font-bold">▽</button>
+                            <div class="flex items-baseline">
+                                <input type="number" id="input-p2" value="180" min="0" max="1000" class="vote-input">
+                                <span class="text-slate-400 text-[10px] font-black">人</span>
+                            </div>
+                            <button onclick="changeValue('p2', 1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white transition-all text-xl font-bold">△</button>
+                        </div>
+                    </div>
+
+                    <!-- Party C -->
+                    <div class="control-card bg-white border-2 border-emerald-100 rounded-2xl p-4 flex flex-col items-center shadow-sm hover:border-emerald-500">
+                        <span class="text-emerald-600 font-black text-lg mb-1">C党</span>
+                        <div class="flex items-center space-x-1">
+                            <button onclick="changeValue('p3', -1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all text-xl font-bold">▽</button>
+                            <div class="flex items-baseline">
+                                <input type="number" id="input-p3" value="120" min="0" max="1000" class="vote-input">
+                                <span class="text-slate-400 text-[10px] font-black">人</span>
+                            </div>
+                            <button onclick="changeValue('p3', 1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all text-xl font-bold">△</button>
+                        </div>
+                    </div>
+
+                    <!-- Abstention -->
+                    <div class="bg-slate-100 border-2 border-slate-200 rounded-2xl p-4 flex flex-col items-center opacity-80">
+                        <span class="text-slate-500 font-black text-lg mb-1">棄権</span>
+                        <div class="flex items-baseline h-10 leading-10">
+                            <span id="val-absent-votes" class="text-2xl font-black text-slate-500">500</span>
+                            <span class="text-slate-400 text-[10px] font-black ml-1">人</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="alert-cap" class="invisible mt-4 text-center text-[11px] text-orange-600 font-black animate-pulse uppercase tracking-widest">
+                    村の総人口1000人に達しました。これ以上は増やせません。
+                </div>
+            </section>
+
+            <!-- Analysis Message -->
+            <section class="bg-indigo-50 p-6 md:p-8 rounded-2xl border border-indigo-100 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10">
+                    <svg class="w-20 h-20 text-indigo-900" fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path></svg>
+                </div>
+                <h3 class="font-black text-indigo-900 mb-3 flex items-center text-xs uppercase tracking-widest">
+                    <span class="bg-indigo-600 text-white p-1 px-2 rounded mr-2 text-[10px]">Info</span>
+                    この村の現状
+                </h3>
+                <p id="analysis-text" class="text-indigo-900/80 text-base leading-relaxed relative z-10 font-bold">
+                    読み込み中...
+                </p>
+            </section>
+        </div>
+        
+        <footer class="p-6 bg-slate-50 text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest border-t border-slate-100">
+            Every single vote shapes our village's destiny.
+        </footer>
+    </div>
+
+    <script>
+        const totalPeople = 1000;
+        
+        const inputs = {
+            p1: document.getElementById('input-p1'),
+            p2: document.getElementById('input-p2'),
+            p3: document.getElementById('input-p3')
+        };
+
+        const labels = {
+            turnoutBig: document.getElementById('label-turnout-big'),
+            analysis: document.getElementById('analysis-text'),
+            absentVotes: document.getElementById('val-absent-votes')
+        };
+
+        const bars = {
+            p1: document.getElementById('bar-party1'),
+            p2: document.getElementById('bar-party2'),
+            p3: document.getElementById('bar-party3'),
+            absent: document.getElementById('bar-absent')
+        };
+
+        const alertCap = document.getElementById('alert-cap');
+
+        // △▽ボタンで値を変更する関数（1人ずつ増減）
+        window.changeValue = function(id, delta) {
+            const input = inputs[id];
+            let newVal = (parseInt(input.value) || 0) + delta;
+            if (newVal < 0) newVal = 0;
+            
+            // 合計制限チェック
+            const otherVotes = getOtherVotes(id);
+            if (newVal + otherVotes > totalPeople) {
+                newVal = totalPeople - otherVotes;
+                alertCap.classList.remove('invisible');
+            } else {
+                alertCap.classList.add('invisible');
+            }
+            
+            input.value = newVal;
+            update();
+        };
+
+        function getOtherVotes(excludeId) {
+            let sum = 0;
+            for (const id in inputs) {
+                if (id !== excludeId) {
+                    sum += parseInt(inputs[id].value) || 0;
+                }
+            }
+            return sum;
+        }
+
+        function update() {
+            let p1 = parseInt(inputs.p1.value) || 0;
+            let p2 = parseInt(inputs.p2.value) || 0;
+            let p3 = parseInt(inputs.p3.value) || 0;
+
+            // 合計値のバリデーション
+            let totalVoters = p1 + p2 + p3;
+            if (totalVoters > totalPeople) {
+                const over = totalVoters - totalPeople;
+                // 強制リセット（超過分を引く）
+                totalVoters = totalPeople;
+                alertCap.classList.remove('invisible');
+            } else {
+                alertCap.classList.add('invisible');
+            }
+
+            const absentCount = totalPeople - totalVoters;
+            const turnoutPercent = Math.round((totalVoters / totalPeople) * 100);
+
+            // 表示の更新
+            labels.turnoutBig.innerText = turnoutPercent;
+            labels.absentVotes.innerText = absentCount;
+
+            // グラフの更新
+            bars.p1.style.width = `${(p1 / totalPeople) * 100}%`;
+            bars.p2.style.width = `${(p2 / totalPeople) * 100}%`;
+            bars.p3.style.width = `${(p3 / totalPeople) * 100}%`;
+            bars.absent.style.width = `${(absentCount / totalPeople) * 100}%`;
+
+            // グラフ内の文字表示
+            bars.p1.innerText = p1 > 40 ? 'A' : '';
+            bars.p2.innerText = p2 > 40 ? 'B' : '';
+            bars.p3.innerText = p3 > 40 ? 'C' : '';
+            bars.absent.innerText = absentCount > 80 ? '棄権' : '';
+
+            // 分析メッセージ
+            const winnerVotes = Math.max(p1, p2, p3);
+            let winnerName = "";
+            if (totalVoters === 0) {
+                labels.analysis.innerHTML = "村人全員が棄権しています。誰も投票に行かないと、村の未来を誰も選んでいないことになります。";
+                return;
+            }
+            
+            if(winnerVotes === p1) winnerName = "A党";
+            else if(winnerVotes === p2) winnerName = "B党";
+            else winnerName = "C党";
+
+            let analysis = "";
+            if (turnoutPercent <= 20) {
+                analysis = `【衝撃の事実】投票率がわずか${turnoutPercent}%です。村のルールは、たった <strong>${winnerVotes}人</strong> の賛成で${winnerName}に決まりました。残りの${absentCount}人は、自分たちが選んでいない決定に従うことになります。`;
+            } else if (turnoutPercent < 50) {
+                analysis = `現在、${winnerName}がリードしていますが、村全体の${(winnerVotes/10).toFixed(1)}%の人にしか支持されていません。もし棄権している${absentCount}人のうち、たった${Math.abs(p1-p2)+1}人が別の党に投票すれば、村の未来は一瞬でひっくり返ります。`;
+            } else if (turnoutPercent >= 80) {
+                analysis = `投票率${turnoutPercent}%！ 素晴らしい参加率です。${winnerName}の勝利は、村人の多くが納得できる重みを持っています。`;
+            } else {
+                analysis = `投票率は${turnoutPercent}%。${winnerName}が優勢ですが、まだ「棄権」のグレーの部分が${absentCount}人分もあります。この人たちが動き出せば、どんな結果にでもなり得ます。`;
+            }
+            labels.analysis.innerHTML = analysis;
+        }
+
+        // 直接入力時の制御
+        Object.values(inputs).forEach(input => {
+            input.addEventListener('input', () => {
+                let val = parseInt(input.value) || 0;
+                if (val < 0) val = 0;
+                // 合計チェックはupdate内で行うが、入力自体も一旦受け入れる
+                update();
+            });
+        });
+
+        // 初回実行
+        update();
+    </script>
+</body>
+</html>
