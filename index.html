@@ -82,7 +82,8 @@
                     <div id="bar-party1" class="bar-segment bg-rose-500 shadow-inner">A</div>
                     <div id="bar-party2" class="bar-segment bg-amber-500 shadow-inner">B</div>
                     <div id="bar-party3" class="bar-segment bg-emerald-500 shadow-inner">C</div>
-                    <div id="bar-absent" class="bar-segment bg-slate-300 text-slate-500">棄権</div>
+                    <!-- 棄権：文字を黒へ -->
+                    <div id="bar-absent" class="bar-segment bg-slate-300 text-black">棄権</div>
                 </div>
 
                 <!-- Interactive Cards -->
@@ -101,7 +102,7 @@
                     </div>
 
                     <!-- Party B -->
-                    <div class="control-card bg-white border-2 border-amber-100 rounded-2xl p-4 flex flex-col items-center shadow-sm hover:border-amber-500">
+                    <div class="control-card bg-white border-2 border-rose-100 rounded-2xl p-4 flex flex-col items-center shadow-sm hover:border-amber-500" style="border-color: rgba(245, 158, 11, 0.25);">
                         <span class="text-amber-600 font-black text-lg mb-1">B党</span>
                         <div class="flex items-center space-x-1">
                             <button onclick="changeValue('p2', -1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white transition-all text-xl font-bold">▽</button>
@@ -128,9 +129,10 @@
 
                     <!-- Abstention -->
                     <div class="bg-slate-100 border-2 border-slate-200 rounded-2xl p-4 flex flex-col items-center opacity-80">
-                        <span class="text-slate-500 font-black text-lg mb-1">棄権</span>
+                        <!-- 棄権：文字を黒へ -->
+                        <span class="text-black font-black text-lg mb-1">棄権</span>
                         <div class="flex items-baseline h-10 leading-10">
-                            <span id="val-absent-votes" class="text-2xl font-black text-slate-500">500</span>
+                            <span id="val-absent-votes" class="text-2xl font-black text-black">500</span>
                             <span class="text-slate-400 text-[10px] font-black ml-1">人</span>
                         </div>
                     </div>
@@ -146,12 +148,10 @@
                 <h3 class="font-black text-indigo-900 mb-4 text-sm uppercase tracking-widest border-b border-indigo-200 pb-2">
                     現在の状況
                 </h3>
-                <p id="analysis-text" class="text-slate-800 text-base leading-relaxed font-bold">
-                    読み込み中...
-                </p>
+                <div id="analysis-text" class="text-slate-800 text-base leading-relaxed font-bold">読み込み中...</div>
             </section>
         </div>
-        
+
         <footer class="p-6 bg-slate-50 text-center text-xs text-slate-500 font-bold border-t border-slate-100">
             あなたの1票が、未来を変える。
         </footer>
@@ -159,7 +159,7 @@
 
     <script>
         const totalPeople = 1000;
-        
+
         const inputs = {
             p1: document.getElementById('input-p1'),
             p2: document.getElementById('input-p2'),
@@ -181,12 +181,19 @@
 
         const alertCap = document.getElementById('alert-cap');
 
+        // 色クラス（見た目の統一用）
+        const partyStyle = {
+            p1: { name: 'A党', text: 'text-rose-600', dot: 'bg-rose-500' },
+            p2: { name: 'B党', text: 'text-amber-600', dot: 'bg-amber-500' },
+            p3: { name: 'C党', text: 'text-emerald-600', dot: 'bg-emerald-500' },
+        };
+
         // △▽ボタンで値を変更する関数（1人ずつ増減）
         window.changeValue = function(id, delta) {
             const input = inputs[id];
             let newVal = (parseInt(input.value) || 0) + delta;
             if (newVal < 0) newVal = 0;
-            
+
             // 合計制限チェック
             const otherVotes = getOtherVotes(id);
             if (newVal + otherVotes > totalPeople) {
@@ -195,7 +202,7 @@
             } else {
                 alertCap.classList.add('invisible');
             }
-            
+
             input.value = newVal;
             update();
         };
@@ -208,6 +215,10 @@
                 }
             }
             return sum;
+        }
+
+        function roundToNearest5(n) {
+            return Math.max(0, Math.round(n / 5) * 5);
         }
 
         function update() {
@@ -244,11 +255,11 @@
             bars.p3.innerText = p3 > 40 ? 'C' : '';
             bars.absent.innerText = absentCount > 80 ? '棄権' : '';
 
-            // 分析メッセージ作成
+            // 分析メッセージ作成（スクショの雰囲気に合わせた文章）
             const votes = [
-                { id: 'p1', name: 'A党', count: p1 },
-                { id: 'p2', name: 'B党', count: p2 },
-                { id: 'p3', name: 'C党', count: p3 }
+                { id: 'p1', count: p1 },
+                { id: 'p2', count: p2 },
+                { id: 'p3', count: p3 }
             ];
 
             // 票数順にソート（降順）
@@ -260,37 +271,88 @@
             let analysis = "";
 
             if (totalVoters === 0) {
-                analysis = "投票者が0人です。誰も投票しなければ、何も決まりません。";
-            } else {
-                // 当選メッセージ
-                analysis += `<span class="text-xl text-indigo-900 block mb-4 border-l-4 border-indigo-600 pl-3">${winner.name}が当選しました。（${winner.count}票）</span>`;
-                
-                // 逆転に必要な票数の計算
-                let details = [];
-                runnerUps.forEach(party => {
-                    const diff = winner.count - party.count;
-                    // 逆転するには差分+1票が必要（棄権者から獲得する場合）
-                    const needed = diff + 1;
-                    
-                    // 棄権者が足りるかチェック
-                    const isPossible = absentCount >= needed;
-                    
-                    if (isPossible) {
-                        details.push(`${party.name}は、棄権した人のうち<span class="text-red-600 border-b-2 border-red-200">あと${needed}人</span>が投票していれば、${winner.name}に勝っていました。`);
-                    } else {
-                        // 棄権者全員が投票しても勝てない場合（レアケース）
-                        details.push(`${party.name}は、棄権した${absentCount}人全員が投票しても追いつけませんでした。`);
-                    }
-                });
-
-                if (details.length > 0) {
-                    analysis += `<div class="mt-4 space-y-2 text-sm text-slate-700 font-medium">` + details.join("<br>") + `</div>`;
-                }
-
-                if (turnoutPercent <= 30) {
-                     analysis += `<div class="mt-6 pt-4 border-t border-indigo-200 text-xs text-slate-500">※投票率がとても低いです。村全体のほんの一部の人の意見だけでルールが決まっています。</div>`;
-                }
+                analysis = `投票者が0人です。誰も投票しなければ、何も決まりません。`;
+                labels.analysis.innerHTML = analysis;
+                return;
             }
+
+            const w = partyStyle[winner.id];
+
+            // 見出し（● A党が当選しました！）
+            analysis += `
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="inline-block w-3 h-3 rounded-full ${w.dot}"></span>
+                    <div class="font-black text-lg md:text-xl">
+                        <span class="${w.text}">${w.name}</span>が当選しました！（${winner.count}票）
+                    </div>
+                </div>
+            `;
+
+            // 投票率の説明
+            let tone = "";
+            if (turnoutPercent >= 50) {
+                tone = "まずまずですが、";
+            } else if (turnoutPercent >= 30) {
+                tone = "少し低めで、";
+            } else {
+                tone = "かなり低く、";
+            }
+
+            analysis += `
+                <div class="text-slate-700 leading-relaxed mb-6">
+                    投票率が<span class="text-blue-700 font-black">${turnoutPercent}%</span>です。
+                    ${totalPeople}人のうち<span class="text-blue-700 font-black">${totalVoters}人</span>が投票しています。
+                    ${tone}<span class="text-blue-700 font-black">${absentCount}人</span>が投票していません。
+                </div>
+            `;
+
+            // 重要パート：逆転ライン（スクショっぽく「◯人（◯%）」表記）
+            analysis += `
+                <div class="mt-2">
+                    <div class="font-black text-indigo-900 mb-2 flex items-center gap-2">
+                        <span class="text-lg">📌</span><span>重要！</span>
+                    </div>
+                    <div class="space-y-3 text-slate-800 leading-relaxed">
+            `;
+
+            runnerUps.forEach(party => {
+                const s = partyStyle[party.id];
+                const diff = winner.count - party.count;
+                const neededExact = diff + 1;
+
+                // スクショの雰囲気重視：%は「棄権者のうち」で5%刻みに丸め、人数もその%から逆算
+                let pctRaw = absentCount === 0 ? 0 : (neededExact / absentCount) * 100;
+                let pct5 = roundToNearest5(pctRaw);
+                let neededDisplay = absentCount === 0 ? 0 : Math.round(absentCount * (pct5 / 100)) + 1;
+
+                // 棄権0人のときは表示を整理
+                if (absentCount === 0) {
+                    analysis += `
+                        <div>
+                            すでに全員が投票しています。<span class="${s.text} font-black">${s.name}</span>が逆転するには、投票の配分そのものを変える必要があります。
+                        </div>
+                    `;
+                    return;
+                }
+
+                analysis += `
+                    <div>
+                        投票しなかった${absentCount}人のうち、<span class="text-indigo-700 font-black">たった${neededDisplay}人（${pct5}%）</span>が
+                        <span class="inline-flex items-center gap-2 font-black ${s.text}">
+                            <span class="inline-block w-3 h-3 rounded-full ${s.dot}"></span>${s.name}
+                        </span>
+                        に投票していれば、<span class="${s.text} font-black">${s.name}</span>が当選できました！
+                    </div>
+                `;
+            });
+
+            analysis += `
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-indigo-200 text-indigo-900 font-black text-lg">
+                        あなたの1票が結果を変えるかもしれません！
+                    </div>
+                </div>
+            `;
 
             labels.analysis.innerHTML = analysis;
         }
