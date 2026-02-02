@@ -65,7 +65,7 @@
         <!-- Header -->
         <div class="border-b border-slate-100 p-6 md:p-8 text-center bg-slate-50/50">
             <h1 class="text-xl md:text-2xl font-black tracking-tight text-slate-800">1000人の村 選挙シミュレーター</h1>
-            <p class="mt-1 text-slate-500 text-sm italic font-medium">あなたの1票が、未来を変える。</p>
+            <p class="mt-2 text-slate-600 font-bold">あなたの1票が、未来を変える。</p>
         </div>
 
         <div class="p-6 md:p-10 space-y-10">
@@ -142,22 +142,18 @@
             </section>
 
             <!-- Analysis Message -->
-            <section class="bg-indigo-50 p-6 md:p-8 rounded-2xl border border-indigo-100 shadow-sm relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-4 opacity-10">
-                    <svg class="w-20 h-20 text-indigo-900" fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path></svg>
-                </div>
-                <h3 class="font-black text-indigo-900 mb-3 flex items-center text-xs uppercase tracking-widest">
-                    <span class="bg-indigo-600 text-white p-1 px-2 rounded mr-2 text-[10px]">Info</span>
-                    この村の現状
+            <section class="bg-indigo-50 p-6 md:p-8 rounded-2xl border border-indigo-100 shadow-sm">
+                <h3 class="font-black text-indigo-900 mb-4 text-sm uppercase tracking-widest border-b border-indigo-200 pb-2">
+                    現在の状況
                 </h3>
-                <p id="analysis-text" class="text-indigo-900/80 text-base leading-relaxed relative z-10 font-bold">
+                <p id="analysis-text" class="text-slate-800 text-base leading-relaxed font-bold">
                     読み込み中...
                 </p>
             </section>
         </div>
         
-        <footer class="p-6 bg-slate-50 text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest border-t border-slate-100">
-            Every single vote shapes our village's destiny.
+        <footer class="p-6 bg-slate-50 text-center text-xs text-slate-500 font-bold border-t border-slate-100">
+            あなたの1票が、未来を変える。
         </footer>
     </div>
 
@@ -222,8 +218,7 @@
             // 合計値のバリデーション
             let totalVoters = p1 + p2 + p3;
             if (totalVoters > totalPeople) {
-                const over = totalVoters - totalPeople;
-                // 強制リセット（超過分を引く）
+                // 強制リセット
                 totalVoters = totalPeople;
                 alertCap.classList.remove('invisible');
             } else {
@@ -249,28 +244,54 @@
             bars.p3.innerText = p3 > 40 ? 'C' : '';
             bars.absent.innerText = absentCount > 80 ? '棄権' : '';
 
-            // 分析メッセージ
-            const winnerVotes = Math.max(p1, p2, p3);
-            let winnerName = "";
-            if (totalVoters === 0) {
-                labels.analysis.innerHTML = "村人全員が棄権しています。誰も投票に行かないと、村の未来を誰も選んでいないことになります。";
-                return;
-            }
-            
-            if(winnerVotes === p1) winnerName = "A党";
-            else if(winnerVotes === p2) winnerName = "B党";
-            else winnerName = "C党";
+            // 分析メッセージ作成
+            const votes = [
+                { id: 'p1', name: 'A党', count: p1 },
+                { id: 'p2', name: 'B党', count: p2 },
+                { id: 'p3', name: 'C党', count: p3 }
+            ];
+
+            // 票数順にソート（降順）
+            votes.sort((a, b) => b.count - a.count);
+
+            const winner = votes[0];
+            const runnerUps = votes.slice(1);
 
             let analysis = "";
-            if (turnoutPercent <= 20) {
-                analysis = `【衝撃の事実】投票率がわずか${turnoutPercent}%です。村のルールは、たった <strong>${winnerVotes}人</strong> の賛成で${winnerName}に決まりました。残りの${absentCount}人は、自分たちが選んでいない決定に従うことになります。`;
-            } else if (turnoutPercent < 50) {
-                analysis = `現在、${winnerName}がリードしていますが、村全体の${(winnerVotes/10).toFixed(1)}%の人にしか支持されていません。もし棄権している${absentCount}人のうち、たった${Math.abs(p1-p2)+1}人が別の党に投票すれば、村の未来は一瞬でひっくり返ります。`;
-            } else if (turnoutPercent >= 80) {
-                analysis = `投票率${turnoutPercent}%！ 素晴らしい参加率です。${winnerName}の勝利は、村人の多くが納得できる重みを持っています。`;
+
+            if (totalVoters === 0) {
+                analysis = "投票者が0人です。誰も投票しなければ、何も決まりません。";
             } else {
-                analysis = `投票率は${turnoutPercent}%。${winnerName}が優勢ですが、まだ「棄権」のグレーの部分が${absentCount}人分もあります。この人たちが動き出せば、どんな結果にでもなり得ます。`;
+                // 当選メッセージ
+                analysis += `<span class="text-xl text-indigo-900 block mb-4 border-l-4 border-indigo-600 pl-3">${winner.name}が当選しました。（${winner.count}票）</span>`;
+                
+                // 逆転に必要な票数の計算
+                let details = [];
+                runnerUps.forEach(party => {
+                    const diff = winner.count - party.count;
+                    // 逆転するには差分+1票が必要（棄権者から獲得する場合）
+                    const needed = diff + 1;
+                    
+                    // 棄権者が足りるかチェック
+                    const isPossible = absentCount >= needed;
+                    
+                    if (isPossible) {
+                        details.push(`${party.name}は、棄権した人のうち<span class="text-red-600 border-b-2 border-red-200">あと${needed}人</span>が投票していれば、${winner.name}に勝っていました。`);
+                    } else {
+                        // 棄権者全員が投票しても勝てない場合（レアケース）
+                        details.push(`${party.name}は、棄権した${absentCount}人全員が投票しても追いつけませんでした。`);
+                    }
+                });
+
+                if (details.length > 0) {
+                    analysis += `<div class="mt-4 space-y-2 text-sm text-slate-700 font-medium">` + details.join("<br>") + `</div>`;
+                }
+
+                if (turnoutPercent <= 30) {
+                     analysis += `<div class="mt-6 pt-4 border-t border-indigo-200 text-xs text-slate-500">※投票率がとても低いです。村全体のほんの一部の人の意見だけでルールが決まっています。</div>`;
+                }
             }
+
             labels.analysis.innerHTML = analysis;
         }
 
@@ -279,7 +300,6 @@
             input.addEventListener('input', () => {
                 let val = parseInt(input.value) || 0;
                 if (val < 0) val = 0;
-                // 合計チェックはupdate内で行うが、入力自体も一旦受け入れる
                 update();
             });
         });
