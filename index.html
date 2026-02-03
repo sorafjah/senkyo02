@@ -1,5 +1,5 @@
-
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -69,244 +69,254 @@
             <p class="mt-2 text-slate-600 font-bold">あなたの1票が、未来を変える。</p>
         </div>
 
-        <div class="p-6 md:p-10 space-y-10">
-            <!-- Main Bar Chart -->
-            <section>
-                <div class="flex justify-between items-end mb-4 px-2">
-                    <h2 class="font-bold text-slate-700 text-sm uppercase tracking-wider">村全体の得票率</h2>
-                    <div class="text-right">
-                        <span class="text-[10px] text-slate-400 block font-bold uppercase">投票率</span>
-                        <span id="label-turnout-big" class="font-black text-blue-600 text-2xl">50</span><span class="text-blue-600 font-black text-lg">%</span>
-                    </div>
+```
+    <div class="p-6 md:p-10 space-y-10">
+        <!-- Main Bar Chart -->
+        <section>
+            <div class="flex justify-between items-end mb-4 px-2">
+                <h2 class="font-bold text-slate-700 text-sm uppercase tracking-wider">村全体の得票率</h2>
+                <div class="text-right">
+                    <span class="text-[10px] text-slate-400 block font-bold uppercase">投票率</span>
+                    <span id="label-turnout-big" class="font-black text-blue-600 text-2xl">50</span><span class="text-blue-600 font-black text-lg">%</span>
                 </div>
-                <div class="bar-container mb-10" id="main-bar">
-                    <div id="bar-party1" class="bar-segment bg-rose-500 shadow-inner">A</div>
-                    <div id="bar-party2" class="bar-segment bg-amber-500 shadow-inner">B</div>
-                    <div id="bar-party3" class="bar-segment bg-emerald-500 shadow-inner">C</div>
-                    <div id="bar-absent" class="bar-segment bg-slate-300 text-slate-500">棄権</div>
-                </div>
+            </div>
+            <div class="bar-container mb-10" id="main-bar">
+                <div id="bar-party1" class="bar-segment bg-rose-500 shadow-inner">A</div>
+                <div id="bar-party2" class="bar-segment bg-amber-500 shadow-inner">B</div>
+                <div id="bar-party3" class="bar-segment bg-emerald-500 shadow-inner">C</div>
+                <div id="bar-absent" class="bar-segment bg-slate-300 text-slate-800">棄権</div>
+            </div>
 
-                <!-- Interactive Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <!-- Party A -->
-                    <div class="control-card bg-white border-2 border-rose-100 rounded-2xl p-4 flex flex-col items-center shadow-sm hover:border-rose-500">
-                        <span class="text-rose-600 font-black text-lg mb-1">A党</span>
-                        <div class="flex items-center space-x-1">
-                            <button onclick="changeValue('p1', -1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 text-rose-600 hover:bg-rose-500 hover:text-white transition-all text-xl font-bold">▽</button>
-                            <div class="flex items-baseline">
-                                <input type="number" id="input-p1" value="200" min="0" max="1000" class="vote-input">
-                                <span class="text-slate-400 text-[10px] font-black">人</span>
-                            </div>
-                            <button onclick="changeValue('p1', 1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 text-rose-600 hover:bg-rose-500 hover:text-white transition-all text-xl font-bold">△</button>
+            <!-- Interactive Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Party A -->
+                <div class="control-card bg-white border-2 border-rose-100 rounded-2xl p-4 flex flex-col items-center shadow-sm hover:border-rose-500">
+                    <span class="text-rose-600 font-black text-lg mb-1">A党</span>
+                    <div class="flex items-center space-x-1">
+                        <button onclick="changeValue('p1', -1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 text-rose-600 hover:bg-rose-500 hover:text-white transition-all text-xl font-bold">▽</button>
+                        <div class="flex items-baseline">
+                            <input type="number" id="input-p1" value="200" min="0" max="1000" class="vote-input">
+                            <span class="text-slate-400 text-[10px] font-black">人</span>
                         </div>
-                    </div>
-
-                    <!-- Party B -->
-                    <div class="control-card bg-white border-2 border-amber-100 rounded-2xl p-4 flex flex-col items-center shadow-sm hover:border-amber-500">
-                        <span class="text-amber-600 font-black text-lg mb-1">B党</span>
-                        <div class="flex items-center space-x-1">
-                            <button onclick="changeValue('p2', -1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white transition-all text-xl font-bold">▽</button>
-                            <div class="flex items-baseline">
-                                <input type="number" id="input-p2" value="180" min="0" max="1000" class="vote-input">
-                                <span class="text-slate-400 text-[10px] font-black">人</span>
-                            </div>
-                            <button onclick="changeValue('p2', 1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white transition-all text-xl font-bold">△</button>
-                        </div>
-                    </div>
-
-                    <!-- Party C -->
-                    <div class="control-card bg-white border-2 border-emerald-100 rounded-2xl p-4 flex flex-col items-center shadow-sm hover:border-emerald-500">
-                        <span class="text-emerald-600 font-black text-lg mb-1">C党</span>
-                        <div class="flex items-center space-x-1">
-                            <button onclick="changeValue('p3', -1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all text-xl font-bold">▽</button>
-                            <div class="flex items-baseline">
-                                <input type="number" id="input-p3" value="120" min="0" max="1000" class="vote-input">
-                                <span class="text-slate-400 text-[10px] font-black">人</span>
-                            </div>
-                            <button onclick="changeValue('p3', 1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all text-xl font-bold">△</button>
-                        </div>
-                    </div>
-
-                    <!-- Abstention -->
-                    <div class="bg-slate-100 border-2 border-slate-200 rounded-2xl p-4 flex flex-col items-center opacity-80">
-                        <span class="text-slate-500 font-black text-lg mb-1">棄権</span>
-                        <div class="flex items-baseline h-10 leading-10">
-                            <span id="val-absent-votes" class="text-2xl font-black text-slate-500">500</span>
-                            <span class="text-slate-400 text-[10px] font-black ml-1">人</span>
-                        </div>
+                        <button onclick="changeValue('p1', 1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 text-rose-600 hover:bg-rose-500 hover:text-white transition-all text-xl font-bold">△</button>
                     </div>
                 </div>
 
-                <div id="alert-cap" class="invisible mt-4 text-center text-[11px] text-orange-600 font-black animate-pulse uppercase tracking-widest">
-                    村の総人口1000人に達しました。これ以上は増やせません。
+                <!-- Party B -->
+                <div class="control-card bg-white border-2 border-amber-100 rounded-2xl p-4 flex flex-col items-center shadow-sm hover:border-amber-500">
+                    <span class="text-amber-600 font-black text-lg mb-1">B党</span>
+                    <div class="flex items-center space-x-1">
+                        <button onclick="changeValue('p2', -1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white transition-all text-xl font-bold">▽</button>
+                        <div class="flex items-baseline">
+                            <input type="number" id="input-p2" value="180" min="0" max="1000" class="vote-input">
+                            <span class="text-slate-400 text-[10px] font-black">人</span>
+                        </div>
+                        <button onclick="changeValue('p2', 1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white transition-all text-xl font-bold">△</button>
+                    </div>
                 </div>
-            </section>
 
-            <!-- Analysis Message -->
-            <section class="bg-indigo-50 p-6 md:p-8 rounded-2xl border border-indigo-100 shadow-sm">
-                <h3 class="font-black text-indigo-900 mb-4 text-sm uppercase tracking-widest border-b border-indigo-200 pb-2">
-                    現在の状況
-                </h3>
-                <p id="analysis-text" class="text-slate-800 text-base leading-relaxed font-bold">
-                    読み込み中...
-                </p>
-            </section>
-        </div>
-        
-        <footer class="p-6 bg-slate-50 text-center text-xs text-slate-500 font-bold border-t border-slate-100">
-            あなたの1票が、未来を変える。
-        </footer>
+                <!-- Party C -->
+                <div class="control-card bg-white border-2 border-emerald-100 rounded-2xl p-4 flex flex-col items-center shadow-sm hover:border-emerald-500">
+                    <span class="text-emerald-600 font-black text-lg mb-1">C党</span>
+                    <div class="flex items-center space-x-1">
+                        <button onclick="changeValue('p3', -1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all text-xl font-bold">▽</button>
+                        <div class="flex items-baseline">
+                            <input type="number" id="input-p3" value="120" min="0" max="1000" class="vote-input">
+                            <span class="text-slate-400 text-[10px] font-black">人</span>
+                        </div>
+                        <button onclick="changeValue('p3', 1)" class="w-10 h-10 flex items-center justify-center rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all text-xl font-bold">△</button>
+                    </div>
+                </div>
+
+                <!-- Abstention -->
+                <div class="bg-slate-100 border-2 border-slate-200 rounded-2xl p-4 flex flex-col items-center opacity-80">
+                    <span class="text-slate-800 font-black text-lg mb-1">棄権</span>
+                    <div class="flex items-baseline h-10 leading-10">
+                        <span id="val-absent-votes" class="text-2xl font-black text-slate-800">500</span>
+                        <span class="text-slate-400 text-[10px] font-black ml-1">人</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="alert-cap" class="invisible mt-4 text-center text-[11px] text-orange-600 font-black animate-pulse uppercase tracking-widest">
+                村の総人口1000人に達しました。これ以上は増やせません。
+            </div>
+        </section>
+
+        <!-- Analysis Message -->
+        <section class="bg-indigo-50 p-6 md:p-8 rounded-2xl border border-indigo-100 shadow-sm">
+            <h3 class="font-black text-indigo-900 mb-4 text-sm uppercase tracking-widest border-b border-indigo-200 pb-2">
+                現在の状況
+            </h3>
+            <p id="analysis-text" class="text-slate-800 text-base leading-relaxed font-bold">
+                読み込み中...
+            </p>
+        </section>
     </div>
+    
+    <footer class="p-6 bg-slate-50 text-center text-xs text-slate-500 font-bold border-t border-slate-100">
+        あなたの1票が、未来を変える。
+    </footer>
+</div>
 
-    <script>
-        const totalPeople = 1000;
+<script>
+    const totalPeople = 1000;
+    
+    const inputs = {
+        p1: document.getElementById('input-p1'),
+        p2: document.getElementById('input-p2'),
+        p3: document.getElementById('input-p3')
+    };
+
+    const labels = {
+        turnoutBig: document.getElementById('label-turnout-big'),
+        analysis: document.getElementById('analysis-text'),
+        absentVotes: document.getElementById('val-absent-votes')
+    };
+
+    const bars = {
+        p1: document.getElementById('bar-party1'),
+        p2: document.getElementById('bar-party2'),
+        p3: document.getElementById('bar-party3'),
+        absent: document.getElementById('bar-absent')
+    };
+
+    const alertCap = document.getElementById('alert-cap');
+
+    // △▽ボタンで値を変更する関数（1人ずつ増減）
+    window.changeValue = function(id, delta) {
+        const input = inputs[id];
+        let newVal = (parseInt(input.value) || 0) + delta;
+        if (newVal < 0) newVal = 0;
         
-        const inputs = {
-            p1: document.getElementById('input-p1'),
-            p2: document.getElementById('input-p2'),
-            p3: document.getElementById('input-p3')
-        };
-
-        const labels = {
-            turnoutBig: document.getElementById('label-turnout-big'),
-            analysis: document.getElementById('analysis-text'),
-            absentVotes: document.getElementById('val-absent-votes')
-        };
-
-        const bars = {
-            p1: document.getElementById('bar-party1'),
-            p2: document.getElementById('bar-party2'),
-            p3: document.getElementById('bar-party3'),
-            absent: document.getElementById('bar-absent')
-        };
-
-        const alertCap = document.getElementById('alert-cap');
-
-        // △▽ボタンで値を変更する関数（1人ずつ増減）
-        window.changeValue = function(id, delta) {
-            const input = inputs[id];
-            let newVal = (parseInt(input.value) || 0) + delta;
-            if (newVal < 0) newVal = 0;
-            
-            // 合計制限チェック
-            const otherVotes = getOtherVotes(id);
-            if (newVal + otherVotes > totalPeople) {
-                newVal = totalPeople - otherVotes;
-                alertCap.classList.remove('invisible');
-            } else {
-                alertCap.classList.add('invisible');
-            }
-            
-            input.value = newVal;
-            update();
-        };
-
-        function getOtherVotes(excludeId) {
-            let sum = 0;
-            for (const id in inputs) {
-                if (id !== excludeId) {
-                    sum += parseInt(inputs[id].value) || 0;
-                }
-            }
-            return sum;
+        // 合計制限チェック
+        const otherVotes = getOtherVotes(id);
+        if (newVal + otherVotes > totalPeople) {
+            newVal = totalPeople - otherVotes;
+            alertCap.classList.remove('invisible');
+        } else {
+            alertCap.classList.add('invisible');
         }
-
-        function update() {
-            let p1 = parseInt(inputs.p1.value) || 0;
-            let p2 = parseInt(inputs.p2.value) || 0;
-            let p3 = parseInt(inputs.p3.value) || 0;
-
-            // 合計値のバリデーション
-            let totalVoters = p1 + p2 + p3;
-            if (totalVoters > totalPeople) {
-                // 強制リセット
-                totalVoters = totalPeople;
-                alertCap.classList.remove('invisible');
-            } else {
-                alertCap.classList.add('invisible');
-            }
-
-            const absentCount = totalPeople - totalVoters;
-            const turnoutPercent = Math.round((totalVoters / totalPeople) * 100);
-
-            // 表示の更新
-            labels.turnoutBig.innerText = turnoutPercent;
-            labels.absentVotes.innerText = absentCount;
-
-            // グラフの更新
-            bars.p1.style.width = `${(p1 / totalPeople) * 100}%`;
-            bars.p2.style.width = `${(p2 / totalPeople) * 100}%`;
-            bars.p3.style.width = `${(p3 / totalPeople) * 100}%`;
-            bars.absent.style.width = `${(absentCount / totalPeople) * 100}%`;
-
-            // グラフ内の文字表示
-            bars.p1.innerText = p1 > 40 ? 'A' : '';
-            bars.p2.innerText = p2 > 40 ? 'B' : '';
-            bars.p3.innerText = p3 > 40 ? 'C' : '';
-            bars.absent.innerText = absentCount > 80 ? '棄権' : '';
-
-            // 分析メッセージ作成
-            const votes = [
-                { id: 'p1', name: 'A党', count: p1 },
-                { id: 'p2', name: 'B党', count: p2 },
-                { id: 'p3', name: 'C党', count: p3 }
-            ];
-
-            // 票数順にソート（降順）
-            votes.sort((a, b) => b.count - a.count);
-
-            const winner = votes[0];
-            const runnerUps = votes.slice(1);
-
-            let analysis = "";
-
-            if (totalVoters === 0) {
-                analysis = "投票者が0人です。誰も投票しなければ、何も決まりません。";
-            } else {
-                // 当選メッセージ
-                analysis += `<span class="text-xl text-indigo-900 block mb-4 border-l-4 border-indigo-600 pl-3">${winner.name}が当選しました。（${winner.count}票）</span>`;
-                
-                // 逆転に必要な票数の計算
-                let details = [];
-                runnerUps.forEach(party => {
-                    const diff = winner.count - party.count;
-                    // 逆転するには差分+1票が必要（棄権者から獲得する場合）
-                    const needed = diff + 1;
-                    
-                    // 棄権者が足りるかチェック
-                    const isPossible = absentCount >= needed;
-                    
-                    if (isPossible) {
-                        details.push(`${party.name}は、棄権した人のうち<span class="text-red-600 border-b-2 border-red-200">あと${needed}人</span>が投票していれば、${winner.name}に勝っていました。`);
-                    } else {
-                        // 棄権者全員が投票しても勝てない場合（レアケース）
-                        details.push(`${party.name}は、棄権した${absentCount}人全員が投票しても追いつけませんでした。`);
-                    }
-                });
-
-                if (details.length > 0) {
-                    analysis += `<div class="mt-4 space-y-2 text-sm text-slate-700 font-medium">` + details.join("<br>") + `</div>`;
-                }
-
-                if (turnoutPercent <= 30) {
-                     analysis += `<div class="mt-6 pt-4 border-t border-indigo-200 text-xs text-slate-500">※投票率がとても低いです。村全体のほんの一部の人の意見だけでルールが決まっています。</div>`;
-                }
-            }
-
-            labels.analysis.innerHTML = analysis;
-        }
-
-        // 直接入力時の制御
-        Object.values(inputs).forEach(input => {
-            input.addEventListener('input', () => {
-                let val = parseInt(input.value) || 0;
-                if (val < 0) val = 0;
-                update();
-            });
-        });
-
-        // 初回実行
+        
+        input.value = newVal;
         update();
-    </script>
+    };
+
+    function getOtherVotes(excludeId) {
+        let sum = 0;
+        for (const id in inputs) {
+            if (id !== excludeId) {
+                sum += parseInt(inputs[id].value) || 0;
+            }
+        }
+        return sum;
+    }
+
+    function update() {
+        let p1 = parseInt(inputs.p1.value) || 0;
+        let p2 = parseInt(inputs.p2.value) || 0;
+        let p3 = parseInt(inputs.p3.value) || 0;
+
+        // 合計値のバリデーション
+        let totalVoters = p1 + p2 + p3;
+        if (totalVoters > totalPeople) {
+            // 強制リセット
+            totalVoters = totalPeople;
+            alertCap.classList.remove('invisible');
+        } else {
+            alertCap.classList.add('invisible');
+        }
+
+        const absentCount = totalPeople - totalVoters;
+        const turnoutPercent = Math.round((totalVoters / totalPeople) * 100);
+
+        // 表示の更新
+        labels.turnoutBig.innerText = turnoutPercent;
+        labels.absentVotes.innerText = absentCount;
+
+        // グラフの更新
+        bars.p1.style.width = `${(p1 / totalPeople) * 100}%`;
+        bars.p2.style.width = `${(p2 / totalPeople) * 100}%`;
+        bars.p3.style.width = `${(p3 / totalPeople) * 100}%`;
+        bars.absent.style.width = `${(absentCount / totalPeople) * 100}%`;
+
+        // グラフ内の文字表示
+        bars.p1.innerText = p1 > 40 ? 'A' : '';
+        bars.p2.innerText = p2 > 40 ? 'B' : '';
+        bars.p3.innerText = p3 > 40 ? 'C' : '';
+        bars.absent.innerText = absentCount > 80 ? '棄権' : '';
+
+        // 分析メッセージ作成
+        const parties = [
+            { id: 'p1', name: 'A党', count: p1, emoji: '🔴', color: 'rose' },
+            { id: 'p2', name: 'B党', count: p2, emoji: '🟡', color: 'amber' },
+            { id: 'p3', name: 'C党', count: p3, emoji: '🟢', color: 'emerald' }
+        ];
+
+        // 票数順にソート（降順）
+        parties.sort((a, b) => b.count - a.count);
+
+        const winner = parties[0];
+        const runnerUps = parties.slice(1);
+
+        let analysis = "";
+
+        if (totalVoters === 0) {
+            analysis = "投票者が0人です。誰も投票しなければ、何も決まりません。";
+        } else {
+            // 当選メッセージ
+            analysis += `<div class="text-xl font-black mb-4">${winner.emoji} ${winner.name}が当選しました！（${winner.count}票）</div>`;
+            
+            // 投票率情報
+            analysis += `<div class="mb-4 text-base">投票率が<span class="text-blue-600 font-black">${turnoutPercent}%</span>です。1000人のうち<span class="font-black">${totalVoters}人</span>が投票しています。`;
+            
+            if (turnoutPercent >= 70) {
+                analysis += `高い投票率です！`;
+            } else if (turnoutPercent >= 50) {
+                analysis += `まずまずですが、<span class="font-black">${absentCount}人</span>が投票していません。`;
+            } else {
+                analysis += `投票率が低いです。<span class="font-black text-red-600">${absentCount}人</span>が投票していません。`;
+            }
+            analysis += `</div>`;
+
+            // 逆転シミュレーション
+            let reversalMessages = [];
+            runnerUps.forEach(party => {
+                const diff = winner.count - party.count;
+                const needed = diff + 1;
+                const neededPercent = Math.round((needed / absentCount) * 100);
+                
+                if (absentCount >= needed && needed > 0) {
+                    reversalMessages.push(`投票しなかった${absentCount}人のうち、<span class="font-black text-red-600">${needed}人（${neededPercent}%）</span>が${party.emoji} ${party.name}に投票していれば、${party.name}が当選できました！`);
+                }
+            });
+
+            if (reversalMessages.length > 0) {
+                analysis += `<div class="mt-4 pt-4 border-t-2 border-red-200 bg-red-50 p-4 rounded-lg">`;
+                analysis += `<div class="font-black text-lg mb-3">📌 重要！</div>`;
+                analysis += reversalMessages.join('<br><br>');
+                analysis += `</div>`;
+                
+                analysis += `<div class="mt-4 text-center text-lg font-black text-indigo-900">あなたの1票が結果を変えるかもしれません！</div>`;
+            }
+        }
+
+        labels.analysis.innerHTML = analysis;
+    }
+
+    // 直接入力時の制御
+    Object.values(inputs).forEach(input => {
+        input.addEventListener('input', () => {
+            let val = parseInt(input.value) || 0;
+            if (val < 0) val = 0;
+            update();
+        });
+    });
+
+    // 初回実行
+    update();
+</script>
+```
+
 </body>
 </html>
